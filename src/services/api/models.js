@@ -1,10 +1,5 @@
 'use strict';
 
-// targets-model.js - A sequelize model
-//
-// See http://docs.sequelizejs.com/en/latest/docs/models-definition/
-// for more of what you can do here.
-
 const Sequelize = require('sequelize');
 
 module.exports = function(sequelize) {
@@ -43,5 +38,25 @@ module.exports = function(sequelize) {
 
   targets.sync();
 
-  return targets;
+  const cleanings = sequelize.define('cleanings', {
+    time: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    cleaner: {
+      type: Sequelize.STRING,
+      allowNull: false
+    }
+  }, {
+    freezeTableName: true
+  });
+
+  cleanings.belongsTo(targets);
+
+  cleanings.sync();
+
+  return {
+    targets: targets,
+    cleanings: cleanings,
+  };
 };
