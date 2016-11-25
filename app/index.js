@@ -1,3 +1,5 @@
+require('./style.scss');
+
 import React from 'react';
 import { render } from 'react-dom';
 
@@ -6,14 +8,21 @@ if (module.hot) {
 }
 
 const Header = () => (
-  <div>Turboclean</div>
+  <header>
+    <h1>Turboclean</h1>
+  </header>
 );
 
+const Main = () => (
+  <main>
+    <p>Turboclean</p>
+  </main>
+);
 
 const App = () => (
   <div>
     <Header/>
-    <h1>Hello World!</h1>
+    <Main/>
   </div>
 );
 
