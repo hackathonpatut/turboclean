@@ -17,9 +17,18 @@ module.exports = {
     filename: "index_bundle.js",
     publicPath: '/'
   },
+  devtool: "source-map",
   module: {
     loaders: [
-      {test: /\.(js|jsx)$/, exclude: /node_modules/, loaders: ["babel-loader"]}
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        loaders: ["babel-loader"]
+      },
+      {
+        test: /\.scss$/,
+        loaders: ["style-loader", "css-loader", "sass-loader"]
+      }
     ]
   },
   plugins: [
