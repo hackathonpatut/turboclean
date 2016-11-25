@@ -12,12 +12,19 @@ const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
 const socketio = require('feathers-socketio');
 const webpack = require('webpack');
+const Sequelize = require('sequelize');
 const middleware = require('./middleware');
 const services = require('./services');
 const config = require('../webpack.config.js');
 
 const app = feathers();
 const compiler = webpack(config);
+
+app.sequelize = new Sequelize('sequelize', '', '', {
+  dialect: 'sqlite',
+  storage: path.join(__dirname, '../data/db.sqlite'),
+  logging: false
+});
 
 app.use(require('webpack-dev-middleware')(compiler, {
   noInfo: true,
