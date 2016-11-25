@@ -5,11 +5,11 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize) {
   const targets = sequelize.define('targets', {
     xPos: {
-      type: Sequelize.STRING,
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     yPos: {
-      type: Sequelize.STRING,
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     name: {
