@@ -5,8 +5,16 @@ if (module.hot) {
   module.hot.accept();
 }
 
-const HelloWorld = () => (
-  <div>App made with Feathers, React, and Webpack</div>
+const Header = () => (
+  <div>Turboclean</div>
 );
 
-render(<HelloWorld />, document.getElementById('app'));
+
+const App = () => (
+  <div>
+    <Header/>
+    <h1>Hello World!</h1>
+  </div>
+);
+
+render(<App />, document.getElementById('app'));

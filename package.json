@@ -1,12 +1,9 @@
 {
-  "name": "feathersApp",
-  "description": "Webpack, React, and Feathers",
-  "version": "0.0.0",
+  "name": "Turboclean",
+  "description": "",
+  "version": "0.1.0",
   "homepage": "",
   "main": "src/",
-  "keywords": [
-    "feathers"
-  ],
   "license": "MIT",
   "repository": {},
   "author": {},
