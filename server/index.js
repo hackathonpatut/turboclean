@@ -4,6 +4,7 @@ var path = require('path');
 var cors = require('cors');
 var Sequelize = require('sequelize');
 var models = require('./models');
+var bodyParser = require('body-parser')
 
 
 var app = express();
@@ -28,19 +29,29 @@ app.enable('trust proxy');
 
 app.use(compression());
 
+app.use(bodyParser.json());
+
 app.options('/api/targets', cors());
 app.get('/api/targets', cors(), function(req, res) {
-  models.targets.findAll({ limit: 50, order: 'dirtyness DESC' })
+  models.targets.findAll({ include: [ models.cleanings ], limit: 50, order: 'dirtyness DESC' })
   .then(function(data) {
     res.send(data);
   })
 });
 
+app.post('/api/cleanings', cors(), function(req, res) {
+  models.cleanings.create({ targetId: req.body.id, cleaner: req.body.cleaner, time: new Date().toISOString() })
+  .then(function(data) {
+    res.sendStatus(200);
+  });
+});
+
+
 app.route('/').get(function(req, res) {
-    res.header('Cache-Control', "max-age=60, must-revalidate, private");
-    res.sendFile('index.html', {
-        root: static_path
-    });
+  res.header('Cache-Control', "max-age=60, must-revalidate, private");
+  res.sendFile('index.html', {
+    root: static_path
+  });
 });
 
 function nocache(req, res, next) {

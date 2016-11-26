@@ -14,13 +14,22 @@ const Header = () => (
 class Task extends React.Component{
   constructor(props) {
     super(props);
-    this.state = { collapsed: true };
+    this.state = { collapsed: true, completed: false };
 
     this.toggle = this.toggle.bind(this);
+    this.send = this.send.bind(this);
   }
 
   toggle(){
-    this.setState({ collapsed: !this.state.collapsed });
+    this.setState({ collapsed: !this.state.collapsed, completed: false });
+  }
+
+  send() {
+    request.post('/api/cleanings')
+      .set('Content-Type', 'application/json')
+      .send(`{"id":"${ this.props.task.id }","cleaner":"Alan"}`)
+      .end();
+    this.setState({ collapsed: false, completed: true });
   }
 
   render() {
@@ -35,19 +44,21 @@ class Task extends React.Component{
       }
     };
 
-    const collapsedClass = other => ( this.state.collapsed ? other : `${other} expanded` );
+    const collapsedClass = other => ( this.state.completed ? `${other} hide` : (this.state.collapsed ? other : `${other} expanded`) );
 
     return (
-      <div onClick={ this.toggle } className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
-        <h2>Room { this.props.task.name }</h2>
+      <div className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
+        <h2 onClick={ this.toggle }>Room { this.props.task.name }</h2>
         <p><span>Trash:</span> { this.props.task.trashFullness } %</p>
-        <p><span>Dirtyness:</span> { this.props.task.dirtyness } %</p>
-        <ArrowBottom color="#ccc"/>
+        <p><span>Dirtiness:</span> { this.props.task.dirtyness } %</p>
+        <div onClick={ this.toggle }>
+          <ArrowBottom color="#ccc"/>
+        </div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
           <p><span>Last cleaned:</span> { moment( _.head (_.maxBy(this.props.task.cleanings, 'time') ) ).calendar() }</p>
           <p><span>Used after cleaned:</span> { Math.round(this.props.task.usageHours) } hours</p>
-          <a onClick={ this.handleClick }>Press to complete</a>
+          <a onClick={ this.send }>Press to complete</a>
         </div>
       </div>
     );
@@ -58,14 +69,6 @@ class Task extends React.Component{
 class Tasklist extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  toggle(event){
-
-  }
-
-  handleClick(){
-
   }
 
   render() {
@@ -86,9 +89,7 @@ export default class App extends React.Component {
   componentDidMount() {
     request.get('/api/targets').end((err,res) => {
       this.setState({ targets: res.body });
-      console.log(res.body);
     });
-
   }
 
   render() {
