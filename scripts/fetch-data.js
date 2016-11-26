@@ -102,14 +102,12 @@ function getData(source, startDate) {
 				
 				targets.find({
 					where: {
-						sensorID: source
+						sensorId: source
 					}
 				}).then(function(target) {
 					cleanings.max('time', {
 						where: {
-							targetID: {
-								$like: '%' + target.get('id') + '%'
-							}
+							targetId: target.get('id')
 						}
 					}).then(function(maxValue) {
 						cleanTimestamp = maxValue;
@@ -121,10 +119,10 @@ function getData(source, startDate) {
 
 							// On first starting element, set sensorID
 							if (lastTimestamp == null && measurement.value === 1) {
-								sensorID = measurement.source.id;
+								sensorId = measurement.source.id;
 							}
 							
-							if (sensorID !== null && lastValue !== measurement.value) {
+							if (sensorId !== null && lastValue !== measurement.value) {
 								// On value 1, start recording
 								if (measurement.value === 1 && (moment.duration(moment.utc(measurement.time).diff(moment.utc(cleanTimestamp))) > 0)) {
 									lastTimestamp = measurement.time;
@@ -141,7 +139,7 @@ function getData(source, startDate) {
 						targets.bulkCreate([]).then(function() {
 							return targets.update(
 								{ usageHours: totalTime },
-								{ where: { sensorID: sensorID }}
+								{ where: { sensorId: sensorID }}
 							);
 						})
 					});
