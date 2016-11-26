@@ -31,6 +31,14 @@ module.exports = function(sequelize) {
     dirtyness: {
       type: Sequelize.FLOAT,
       allowNull: false
+    },
+    type: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    sensorID: {
+      type: Sequelize.STRING,
+      allowNull: false
     }
   }, {
     freezeTableName: true
