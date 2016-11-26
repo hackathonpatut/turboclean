@@ -9,7 +9,7 @@ if ( process.env.DATABASE_URL != undefined ) {
 } else {
   sequelize = new Sequelize('sequelize', '', '', {
    dialect: 'sqlite',
-   storage: path.join(__dirname, '../data/db.sqlite'),
+   storage: path.join(__dirname, dbPath),
    logging: false
   });
 }
