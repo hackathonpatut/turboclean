@@ -53,32 +53,25 @@ footer {
     position: absolute;
   }
 
-  &.orange:before {
-    background: #ffc107;
-  }
+  &.orange:before { background: #ffc107; }
+  &.green:before { background: #4caf50; }
 
-  &.green:before {
-    background: #4caf50;
-  }
-
-  #i-arrow-bottom {
+  #i-arrow-top, #i-bell {
     position: absolute;
     right: 1em;
     top: 1.5em;
     border: 1px solid #ccc;
     padding: 0.5em;
     border-radius: 30px;
+  }
+
+  #i-bell {
+    border-color: #f44336;
+  }
+
+  #i-arrow-top {
     animation: turnDown 250ms ease-in-out;
     animation-fill-mode: forwards;
-
-    &:after {
-      content: 'Expand';
-      text-transform: uppercase;
-      color: #ccc;
-      position: absolute;
-      right: 1em;
-      bottom: 1em;
-    }
   }
 
   h2 {
@@ -94,12 +87,25 @@ footer {
     margin: 0.5em 0;
     display: inline-block;
     color: #5d5d5d;
-    width: 30%;
+    width: 40%;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    font-weight: 700;
 
     span {
       color: #5d5d5d;
+      font-weight: 400;
+    }
+
+    &.label {
+      font-size: 0.85em;
+      text-transform: uppercase;
+      color: #f44336;
     }
   }
+
+  &.orange p.label { color: #ffc107; }
+  &.green p.label { color: #4caf50; }
 
   .details {
     overflow: hidden;
@@ -109,6 +115,7 @@ footer {
     p {
       display: block;
       width: 100%;
+      text-transform: initial !important;
     }
 
     a {
@@ -128,7 +135,7 @@ footer {
     .details {
       animation: expand 250ms ease-in-out;
     }
-    #i-arrow-bottom {
+    #i-arrow-top {
       animation: turnUp 250ms ease-in-out;
     }
   }
