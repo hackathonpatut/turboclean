@@ -56,24 +56,22 @@ footer {
   &.orange:before { background: #ffc107; }
   &.green:before { background: #4caf50; }
 
-  #i-arrow-top {
+  #i-arrow-top, #i-bell {
     position: absolute;
     right: 1em;
     top: 1.5em;
     border: 1px solid #ccc;
     padding: 0.5em;
     border-radius: 30px;
+  }
+
+  #i-bell {
+    border-color: #f44336;
+  }
+
+  #i-arrow-top {
     animation: turnDown 250ms ease-in-out;
     animation-fill-mode: forwards;
-
-    &:after {
-      content: 'Expand';
-      text-transform: uppercase;
-      color: #ccc;
-      position: absolute;
-      right: 1em;
-      bottom: 1em;
-    }
   }
 
   h2 {

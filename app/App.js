@@ -3,7 +3,7 @@ const render = require('react-dom');
 const _ = require('lodash');
 const request = require('superagent');
 const moment = require('moment');
-const { ArrowTop } = require('react-bytesize-icons');
+const { ArrowTop, Bell } = require('react-bytesize-icons');
 
 const Header = () => (
   <header>
@@ -40,12 +40,14 @@ class Task extends React.Component{
 
   render() {
     const taskClass = (value, other) => {
+      if ( value > 99 ) return "alert " + other;
       if ( value > 80 ) return "red " + other;
       if ( value > 60 ) return "orange " + other;
       return "green " + other;
     };
 
     const priorityLabel = value => {
+      if ( value > 99 ) return "Alert";
       if ( value > 80 ) return "High";
       if ( value > 60 ) return "Medium";
       return "Low";
@@ -59,7 +61,7 @@ class Task extends React.Component{
         <p className="label"><span>Priority</span> { priorityLabel(this.props.task.dirtyness) }</p>
         <p><span>Trashbin</span> { this.props.task.trashFullness } %</p>
         <div onClick={ this.toggle }>
-          <ArrowTop color="#ccc"/>
+          { ( this.props.task.dirtyness < 100 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }
         </div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
