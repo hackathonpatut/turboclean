@@ -2,45 +2,80 @@ const React = require('react');
 const render = require('react-dom');
 const _ = require('lodash');
 const request = require('superagent');
-// require('./style.scss');
+const moment = require('moment');
+const { ArrowBottom } = require('react-bytesize-icons');
 
 const Header = () => (
   <header>
     <h1>Turboclean</h1>
-    <h2 className="logout">Patu</h2>
   </header>
 );
 
-class SingleTask extends React.Component{
-  render(){
-    
+const Footer = () => (
+  <footer>
+    <a href="https://github.com/villevuor/turboclean" target="_blank">View code on GitHub</a>
+  </footer>
+);
+
+class Task extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = { collapsed: true, completed: false };
+
+    this.toggle = this.toggle.bind(this);
+    this.send = this.send.bind(this);
   }
+
+  toggle(){
+    this.setState({ collapsed: !this.state.collapsed, completed: false });
+  }
+
+  send() {
+    request.post('/api/cleanings')
+      .set('Content-Type', 'application/json')
+      .send(`{"id":"${ this.props.task.id }","cleaner":"Alan"}`)
+      .end();
+    this.setState({ collapsed: false, completed: true });
+  }
+
+  render() {
+    const taskClass = (value, other) => {
+      if ( value > 80 ) return "red " + other;
+      if ( value > 60 ) return "orange " + other;
+      return "green " + other;
+    };
+
+    const collapsedClass = other => ( this.state.completed ? `${other} hide` : (this.state.collapsed ? other : `${other} expanded`) );
+
+    return (
+      <div className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
+        <h2 onClick={ this.toggle }>Room { this.props.task.name }</h2>
+        <p><span>Trash:</span> { this.props.task.trashFullness } %</p>
+        <p><span>Dirtiness:</span> { this.props.task.dirtyness } %</p>
+        <div onClick={ this.toggle }>
+          <ArrowBottom color="#ccc"/>
+        </div>
+        <div className="details">
+          <p><span>Location:</span> 7th floor, east</p>
+          <p><span>Last cleaned:</span> { moment( _.head (_.maxBy(this.props.task.cleanings, 'time') ) ).calendar() }</p>
+          <p><span>Used after cleaned:</span> { Math.round(this.props.task.usageHours) } hours</p>
+          <a onClick={ this.send }>Press to complete</a>
+        </div>
+      </div>
+    );
+  }
+
 }
 
 class Tasklist extends React.Component {
   constructor(props) {
     super(props);
   }
-  
-  handleClick(){
-    console.log("markusÄLÄKATOTÄNNE");
-  }
 
   render() {
     return (
       <main>
-        { _.map(this.props.tasks, row =>
-          <div className="task">
-            <div className="emergencyColor"> </div>
-            <button className="slider" onClick={this.handleClick}>PRESS TO<br></br>COMPLETE</button>
-            <div className="taskInfo">
-              <h2>{ row.target }</h2>
-              <p>Floor: {row.floor}</p>
-              <p>Trash: {row.trash}</p>
-              <p>Dirtyness: {row.dirtyness}</p>
-            </div>
-          </div>)
-        }
+        { _.map(this.props.tasks, row => <Task task={ row } />) }
       </main>
     );
   }
@@ -49,28 +84,21 @@ class Tasklist extends React.Component {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { tasks: [] };
+    this.state = { targets: [] };
   }
 
   componentDidMount() {
-    
     request.get('/api/targets').end((err,res) => {
-      //this.setState( { targets: res.body } );
-      console.log(res.body);
+      this.setState({ targets: res.body });
     });
-    
-    this.setState({ tasks: [
-      {target: "Room 715", dirtyness: "50%", trash:"80%", floor: "7"},
-      {target: "Room 726", dirtyness:"37%", trash:"30%", floor: "7"},
-      {target: "Room 602", dirtyness:"43%", trash:"50%", floor: "6"}
-     ]});
   }
 
   render() {
     return (
       <div>
         <Header/>
-        <Tasklist tasks={ this.state.tasks }/>
+        <Tasklist tasks={ this.state.targets }/>
+        <Footer/>
       </div>
     );
   }

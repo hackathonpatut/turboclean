@@ -13,7 +13,7 @@ var static_path = path.join(__dirname, './../build');
 var sequelize;
 
 if ( process.env.DATABASE_URL != undefined ) {
-  sequeelize = new Sequelize( process.env.DATABASE_URL );
+  sequelize = new Sequelize( process.env.DATABASE_URL );
 } {
   sequelize = new Sequelize('sequelize', '', '', {
    dialect: 'sqlite',
@@ -32,17 +32,25 @@ app.use(bodyParser.json());
 
 app.options('/api/targets', cors());
 app.get('/api/targets', cors(), function(req, res) {
-  models.targets.findAll()
+  models.targets.findAll({ include: [ models.cleanings ], limit: 50, order: 'dirtyness DESC' })
   .then(function(data) {
     res.send(data);
   })
 });
 
+app.post('/api/cleanings', cors(), function(req, res) {
+  models.cleanings.create({ targetId: req.body.id, cleaner: req.body.cleaner, time: new Date().toISOString() })
+  .then(function(data) {
+    res.sendStatus(200);
+  });
+});
+
+
 app.route('/').get(function(req, res) {
-    res.header('Cache-Control', "max-age=60, must-revalidate, private");
-    res.sendFile('index.html', {
-        root: static_path
-    });
+  res.header('Cache-Control', "max-age=60, must-revalidate, private");
+  res.sendFile('index.html', {
+    root: static_path
+  });
 });
 
 app.post('/api/button', cors(), function(req, res){
