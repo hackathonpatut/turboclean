@@ -40,14 +40,9 @@ class Task extends React.Component{
 
   render() {
     const taskClass = (value, other) => {
-      switch (value) {
-        case value > 0.67:
-          return "red " + other;
-        case value > 0.33:
-          return "orange " + other;
-        default:
-          return "green " + other;
-      }
+      if ( value > 80 ) return "red " + other;
+      if ( value > 60 ) return "orange " + other;
+      return "green " + other;
     };
 
     const collapsedClass = other => ( this.state.completed ? `${other} hide` : (this.state.collapsed ? other : `${other} expanded`) );
