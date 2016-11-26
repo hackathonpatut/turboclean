@@ -11,6 +11,12 @@ const Header = () => (
   </header>
 );
 
+const Footer = () => (
+  <footer>
+    <a href="https://github.com/villevuor/turboclean" target="_blank">View code on GitHub</a>
+  </footer>
+);
+
 class Task extends React.Component{
   constructor(props) {
     super(props);
@@ -97,6 +103,7 @@ export default class App extends React.Component {
       <div>
         <Header/>
         <Tasklist tasks={ this.state.targets }/>
+        <Footer/>
       </div>
     );
   }

@@ -26,6 +26,17 @@ header {
   }
 }
 
+footer {
+  text-align: center;
+  padding: 2em 1em;
+  font-size: 0.85em;
+
+  a {
+    color: $blue;
+    text-decoration: none;
+  }
+}
+
 .task {
   padding: 1em 1em 1em 2em;
   border-bottom: 1px solid #ccc;
@@ -109,6 +120,7 @@ header {
       width: 150px;
       text-align: center;
       line-height: 1;
+      cursor: pointer;
     }
   }
 
