@@ -16,12 +16,63 @@ header {
   background: $blue;
   color: #fff;
   padding: 0.5em 1em;
-
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
   h1 {
     font-size: 1.618em;
+    order: 1;
+  }
+  h2{
+    font-size: 1em;
+    order: 2;
   }
 }
 
 main {
   padding: 0.5em 1em;
+}
+
+h2{
+  font-size: 2.236em;
+  margin: 0.2em 0 0.2em 0;
+}
+
+p {
+  font-size: 1.2em;
+  display: inline-block;
+  padding: 0 0.5em  0em 0;
+  margin: 0 0 0.2em 0;
+}
+.slider{
+  float:right;
+  color: white;
+  background: #2196f3;
+  border: 5px;
+  border-color: white;
+  border-radius: 15px 50px;
+  margin: 35px 10px 0 0;
+}
+.task {
+  margin: 0.5em;
+  color: white;
+  height: 5em;
+  width: auto;
+  background-color: #2196f3;
+  overflow:hidden;
+}
+
+.emergencyColor{
+  width: 30px;
+  height: inherit;
+  float:left;
+  background-color: red;
+}
+
+.taskInfo{
+  width: auto;
+  float:left;
+  margin-right: 5px;
+  margin-left: 5px;
+
 }
