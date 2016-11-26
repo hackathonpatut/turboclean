@@ -21,7 +21,6 @@ if ( process.env.DATABASE_URL != undefined ) {
   });
 }
 
-
 var models = models(sequelize);
 
 app.enable('trust proxy');
