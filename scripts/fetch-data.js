@@ -18,24 +18,41 @@ const sequelize = new Sequelize('sequelize', '', '', {
 
 const models = require('../src/services/api/models.js');
 const targets = models(sequelize).targets;
+const cleanings = models(sequelize).cleanings;
+
+//TODO: Parametrize date
+var startDate='2016-11-25';
+
 
 var startDate='2016-11-22';
 
 sequelize.sync({force: true}).then(function() {
   _.map(sourcesJSON, row => {
-    
-    var target = targets.build({
+    var rand = Math.random();
+		var cleanDate = '';
+		if(rand < 0.33) {
+			cleanDate = '2016-11-23T06:00:00.000Z'
+		} else if(rand < 0.67) {
+			cleanDate = '2016-11-24T10:12:00.000Z'
+		} else {
+			cleanDate = '2016-11-25T06:30:00.000Z'
+		}
+		
+    var target = targets.create({
       xPos: row.x,
       yPos: row.y,
       type: row.type,
       sensorID: row.data_source,
       name: row.name,
       usageHours: 0,
-      trashFullness: 0,
+      trashFullness: Math.floor(Math.random()*100),
       dirtyness: 0
-    });
-
-    target.save();
+    }).then(function(target) {
+				target.createCleaning({
+				time: cleanDate,
+				cleaner: 'Patu'
+			});
+		});
   });
 }).then(function() {
   
@@ -45,7 +62,6 @@ sequelize.sync({force: true}).then(function() {
   })
   
 });
-
 
 function getData(source, startDate) {
 

@@ -55,7 +55,8 @@ module.exports = function(sequelize) {
     freezeTableName: true
   });
 
-  cleanings.belongsTo(targets);
+	targets.hasMany(cleanings);
+	cleanings.belongsTo(targets);
 
   cleanings.sync();
 
