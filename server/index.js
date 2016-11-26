@@ -6,7 +6,6 @@ var Sequelize = require('sequelize');
 var models = require('./models');
 var bodyParser = require('body-parser')
 
-
 var app = express();
 
 var static_path = path.join(__dirname, './../build');
@@ -52,6 +51,15 @@ app.route('/').get(function(req, res) {
   res.sendFile('index.html', {
     root: static_path
   });
+});
+
+app.post('/api/button', cors(), function(req, res){
+  models.targets.update(
+      { dirtyness: 150 },
+      { where: { sensorID: req.body.sensorID }}
+    ).then(function() {
+      res.sendStatus(200);
+    });
 });
 
 function nocache(req, res, next) {
