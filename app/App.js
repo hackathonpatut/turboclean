@@ -45,8 +45,8 @@ class Task extends React.Component{
         <ArrowBottom color="#ccc"/>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
-          <p><span>Last cleaned:</span> { moment( this.props.task.updatedAt ).calendar() }</p>
-          <p><span>Used after cleaned:</span> XXX</p>
+          <p><span>Last cleaned:</span> { moment( _.head (_.maxBy(this.props.task.cleanings, 'time') ) ).calendar() }</p>
+          <p><span>Used after cleaned:</span> { Math.round(this.props.task.usageHours) } hours</p>
           <a onClick={ this.handleClick }>Press to complete</a>
         </div>
       </div>
