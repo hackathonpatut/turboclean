@@ -32,7 +32,7 @@ module.exports = function(sequelize) {
       type: Sequelize.STRING,
       allowNull: false
     },
-    sensorID: {
+    sensorId: {
       type: Sequelize.STRING,
       allowNull: false
     }

@@ -47,7 +47,7 @@ sequelize.sync({force: true}).then(function() {
       xPos: row.x,
       yPos: row.y,
       type: row.type,
-      sensorID: row.data_source,
+      sensorId: row.data_source,
       name: row.name,
       usageHours: 0,
       trashFullness: Math.floor(Math.random()*100),
@@ -69,7 +69,7 @@ sequelize.sync({force: true}).then(function() {
 		});
 	});
 });
-		
+
 
 function getData(source, startDate) {
 
@@ -97,12 +97,12 @@ function getData(source, startDate) {
 
         var totalTime = 0;
         var lastTimestamp = null;
-        var sensorID = null;
+        var sensorId = null;
         var cleanTimestamp = null;
-				
+
 				targets.find({
 					where: {
-						sensorID: source
+						sensorId: source
 					}
 				}).then(function(target) {
 					cleanings.max('time', {
@@ -117,12 +117,12 @@ function getData(source, startDate) {
 
 						_.map(measurements, measurement => {
 
-							// On first starting element, set sensorID
+							// On first starting element, set sensorId
 							if (lastTimestamp == null && measurement.value === 1) {
-								sensorID = measurement.source.id;
+								sensorId = measurement.source.id;
 							}
-							
-							if (sensorID !== null && lastValue !== measurement.value) {
+
+							if (sensorId !== null && lastValue !== measurement.value) {
 								// On value 1, start recording
 								if (measurement.value === 1 && (moment.duration(moment.utc(measurement.time).diff(moment.utc(cleanTimestamp))) > 0)) {
 									lastTimestamp = measurement.time;
@@ -139,7 +139,7 @@ function getData(source, startDate) {
 						targets.bulkCreate([]).then(function() {
 							return targets.update(
 								{ usageHours: totalTime },
-								{ where: { sensorID: sensorID }}
+								{ where: { sensorId: sensorId }}
 							);
 						})
 					});
