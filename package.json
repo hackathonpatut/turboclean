@@ -19,7 +19,8 @@
     "compression": "^1.5.0",
     "cors": "^2.7.1",
     "express": "^4.12.4",
-    "webpack": "^1.9.11"
+    "webpack": "^1.9.11",
+    "html-webpack-plugin": "^1.5.2",
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
@@ -29,7 +30,6 @@
     "css-loader": "^0.14.5",
     "expect": "^1.6.0",
     "file-loader": "^0.8.4",
-    "html-webpack-plugin": "^1.5.2",
     "image-webpack-loader": "^1.6.1",
     "karma": "^0.12.36",
     "karma-chrome-launcher": "^0.1.12",
