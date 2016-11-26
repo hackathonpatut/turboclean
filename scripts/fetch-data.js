@@ -16,7 +16,7 @@ const sequelize = new Sequelize('sequelize', '', '', {
   logging: false
 });
 
-const models = require('../src/services/api/models.js');
+const models = require('../server/models.js');
 const targets = models(sequelize).targets;
 const cleanings = models(sequelize).cleanings;
 
@@ -34,7 +34,9 @@ sequelize.sync({force: true}).then(function() {
 		} else {
 			cleanDate = '2016-11-22T06:30:00.000Z'
 		}
-		
+
+    console.log('Imported room ' + row.name)
+
     var target = targets.create({
       xPos: row.x,
       yPos: row.y,
@@ -66,9 +68,9 @@ sequelize.sync({force: true}).then(function() {
 function getData(source, startDate) {
 
   var endDate = moment(startDate, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD')
-  
+
   var URL = 'https://tieto.iottc.tieto.com/measurement/measurements?source=' + source + '&revert=true&dateTo=' + endDate + '&pageSize=100&currentPage=1&dateFrom=' + startDate;
-  
+
   request
     .get(URL)
     .set('Accept', 'application/json')
@@ -77,13 +79,14 @@ function getData(source, startDate) {
       if (err || !res.ok) {
         console.log('Couldn\'t get data for source ID ' + source);
       } else {
+
         var measurements = res.body.measurements;
-        
+
         // Bail out if there's nothing to read
         if (measurements.size === 0) {
           return false;
         }
-        
+
         measurements = _.orderBy(measurements, 'time', 'asc');
 
         var totalTime = 0;
@@ -139,5 +142,5 @@ function getData(source, startDate) {
 				});
       }
   });
- 
+
 }

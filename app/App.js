@@ -1,14 +1,8 @@
-require('./style.scss');
-
-import React from 'react';
-import { render } from 'react-dom';
-import _ from 'lodash';
-import request from 'superagent';
-
-
-if (module.hot) {
-  module.hot.accept();
-}
+const React = require('react');
+const render = require('react-dom');
+const _ = require('lodash');
+const request = require('superagent');
+// require('./style.scss');
 
 const Header = () => (
   <header>
@@ -30,7 +24,7 @@ class Targets extends React.Component {
   }
 }
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { targets: [] };
@@ -38,9 +32,8 @@ class App extends React.Component {
 
   componentDidMount() {
     request.get('/api/targets').end((err,res) => {
-      this.setState( { targets: res.body.data } );
+      this.setState( { targets: res.body } );
     });
-
   }
 
   render() {
@@ -52,5 +45,3 @@ class App extends React.Component {
     );
   }
 }
-
-render(<App />, document.getElementById('app'));
