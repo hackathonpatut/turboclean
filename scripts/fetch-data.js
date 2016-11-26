@@ -18,13 +18,27 @@ const sequelize = new Sequelize('sequelize', '', '', {
 
 const models = require('../src/services/api/models.js');
 const targets = models(sequelize).targets;
+const cleanings = models(sequelize).cleanings;
+
+//TODO: Parametrize date
+var startDate='2016-11-25';
+
 
 // Drop tables and recreate them
 // TODO: Only targets-table is created again
 sequelize.sync({force: true}).then(function() {
   _.map(sourcesJSON, row => {
-    
-    var target = targets.build({
+    var rand = Math.random();
+		var cleanDate = '';
+		if(rand < 0.33) {
+			cleanDate = '2016-11-23T06:00:00.000Z'
+		} else if(rand < 0.67) {
+			cleanDate = '2016-11-24T10:12:00.000Z'
+		} else {
+			cleanDate = '2016-11-25T06:30:00.000Z'
+		}
+		
+    var target = targets.create({
       xPos: row.x,
       yPos: row.y,
       type: row.type,
@@ -33,14 +47,14 @@ sequelize.sync({force: true}).then(function() {
       usageHours: 0,
       trashFullness: 0,
       dirtyness: 0
-    });
-
-    target.save();
+    }).then(function(target) {
+				target.createCleaning({
+				time: cleanDate,
+				cleaner: 'Patu'
+			});
+		});
   });
 });
-
-//TODO: Parametrize date
-var startDate='2016-11-25';
 
 
 // Uncomment to fetch data
