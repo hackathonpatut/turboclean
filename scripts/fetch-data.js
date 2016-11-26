@@ -102,7 +102,7 @@ function getData(source, startDate) {
 				
 				targets.find({
 					where: {
-						sensorId: source
+						sensorID: source
 					}
 				}).then(function(target) {
 					cleanings.max('time', {
@@ -119,10 +119,10 @@ function getData(source, startDate) {
 
 							// On first starting element, set sensorID
 							if (lastTimestamp == null && measurement.value === 1) {
-								sensorId = measurement.source.id;
+								sensorID = measurement.source.id;
 							}
 							
-							if (sensorId !== null && lastValue !== measurement.value) {
+							if (sensorID !== null && lastValue !== measurement.value) {
 								// On value 1, start recording
 								if (measurement.value === 1 && (moment.duration(moment.utc(measurement.time).diff(moment.utc(cleanTimestamp))) > 0)) {
 									lastTimestamp = measurement.time;
@@ -139,7 +139,7 @@ function getData(source, startDate) {
 						targets.bulkCreate([]).then(function() {
 							return targets.update(
 								{ usageHours: totalTime },
-								{ where: { sensorId: sensorID }}
+								{ where: { sensorID: sensorID }}
 							);
 						})
 					});
