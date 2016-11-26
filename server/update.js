@@ -52,5 +52,7 @@ module.exports = function updateAll(x, y) {
 				);
 			});
 		}
+	}).then(function() {
+		targets.sync();
 	});
 }
