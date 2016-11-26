@@ -21,9 +21,6 @@ const targets = models(sequelize).targets;
 const cleanings = models(sequelize).cleanings;
 
 //TODO: Parametrize date
-var startDate='2016-11-25';
-
-
 var startDate='2016-11-22';
 
 sequelize.sync({force: true}).then(function() {
@@ -31,11 +28,11 @@ sequelize.sync({force: true}).then(function() {
     var rand = Math.random();
 		var cleanDate = '';
 		if(rand < 0.33) {
-			cleanDate = '2016-11-23T06:00:00.000Z'
+			cleanDate = '2016-11-22T06:00:00.000Z'
 		} else if(rand < 0.67) {
-			cleanDate = '2016-11-24T10:12:00.000Z'
+			cleanDate = '2016-11-22T10:12:00.000Z'
 		} else {
-			cleanDate = '2016-11-25T06:30:00.000Z'
+			cleanDate = '2016-11-22T06:30:00.000Z'
 		}
 
     console.log('Imported room ' + row.name)
@@ -57,13 +54,16 @@ sequelize.sync({force: true}).then(function() {
 		});
   });
 }).then(function() {
-
-  // Get usage data for rooms
-  _.map(sourcesJSON, row => {
-    getData(row.data_source, startDate);
-  })
-
+	targets.sync().then(function() {
+		cleanings.sync().then(function() {
+			// Get usage data for rooms
+			_.map(sourcesJSON, row => {
+				getData(row.data_source, startDate);
+			});
+		});
+	});
 });
+		
 
 function getData(source, startDate) {
 
@@ -92,40 +92,54 @@ function getData(source, startDate) {
         var totalTime = 0;
         var lastTimestamp = null;
         var sensorID = null;
+        var cleanTimestamp = null;
+				
+				targets.find({
+					where: {
+						sensorID: source
+					}
+				}).then(function(target) {
+					cleanings.max('time', {
+						where: {
+							targetID: {
+								$like: '%' + target.get('id') + '%'
+							}
+						}
+					}).then(function(maxValue) {
+						cleanTimestamp = maxValue;
+					}).then(function() {
+						// Required as the list may hold duplicates
+						var lastValue = -1;
 
-        // Required as the list may hold duplicates
-        var lastValue = -1;
+						_.map(measurements, measurement => {
 
-        _.map(measurements, measurement => {
-
-          // On first starting element, set sensorID
-          if (lastTimestamp == null && measurement.value === 1) {
-            sensorID = measurement.source.id;
-          }
-
-          if (sensorID !== null && lastValue !== measurement.value) {
-            // On value 1, start recording
-            if (measurement.value === 1) {
-              lastTimestamp = measurement.time;
-              lastValue = measurement.value;
-            // On value 0, stop recording and increment totaltime
-            } else if (measurement.value === 0) {
-              var difference = moment.duration(moment.utc(measurement.time).diff(moment.utc(lastTimestamp)));
-              totalTime += difference.asMinutes() / 60;
-              lastValue = measurement.value;
-            }
-          }
-
-        });
-
-        // Update database entry for sensor
-        targets.bulkCreate([]).then(function() {
-          return targets.update(
-            { usageHours: totalTime },
-            { where: { sensorID: sensorID }}
-          );
-        })
-
+							// On first starting element, set sensorID
+							if (lastTimestamp == null && measurement.value === 1) {
+								sensorID = measurement.source.id;
+							}
+							
+							if (sensorID !== null && lastValue !== measurement.value) {
+								// On value 1, start recording
+								if (measurement.value === 1 && (moment.duration(moment.utc(measurement.time).diff(moment.utc(cleanTimestamp))) > 0)) {
+									lastTimestamp = measurement.time;
+									lastValue = measurement.value;
+								// On value 0, stop recording and increment totaltime
+								} else if (measurement.value === 0) {
+									var difference = moment.duration(moment.utc(measurement.time).diff(moment.utc(lastTimestamp)));
+									totalTime += difference.asMinutes() / 60;
+									lastValue = measurement.value;
+								}
+							}
+						});
+						// Update database entry for sensor
+						targets.bulkCreate([]).then(function() {
+							return targets.update(
+								{ usageHours: totalTime },
+								{ where: { sensorID: sensorID }}
+							);
+						})
+					});
+				});
       }
   });
 
