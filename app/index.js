@@ -5,7 +5,6 @@ import { render } from 'react-dom';
 import _ from 'lodash';
 import request from 'superagent';
 
-
 if (module.hot) {
   module.hot.accept();
 }
@@ -13,18 +12,39 @@ if (module.hot) {
 const Header = () => (
   <header>
     <h1>Turboclean</h1>
+    <h2 className="logout">Patu</h2>
   </header>
 );
 
-class Targets extends React.Component {
+class SingleTask extends React.Component{
+  render(){
+
+  }
+}
+
+class Tasklist extends React.Component {
   constructor(props) {
     super(props);
   }
-
+  handleClick(){
+        console.log("markusÄLÄKATOTÄNNE");
+  }
   render() {
     return (
       <main>
-        { _.map(this.props.targets, row => <p>{ row.name }</p>) }
+        { _.map(this.props.tasks, row =>
+          <div className="task">
+            <div className="emergencyColor"> </div>
+            <button className="slider" onClick={this.handleClick}>PRESS TO<br></br>COMPLETE</button>
+            <div className="taskInfo">
+              <h2>{ row.target }</h2>
+              <p>Floor: {row.floor}</p>
+              <p>Trash: {row.trash}</p>
+              <p>Dirtyness: {row.dirtyness}</p>
+            </div>
+          </div>)
+        }
+
       </main>
     );
   }
@@ -33,21 +53,23 @@ class Targets extends React.Component {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { targets: [] };
+    this.state = { tasks: [] };
   }
 
   componentDidMount() {
-    request.get('/api/targets').end((err,res) => {
-      this.setState( { targets: res.body.data } );
-    });
 
+    this.setState({ tasks: [
+      {target: "Room 715", dirtyness: "50%", trash:"80%", floor: "7"},
+      {target: "Room 726", dirtyness:"37%", trash:"30%", floor: "7"},
+      {target: "Room 602", dirtyness:"43%", trash:"50%", floor: "6"}
+    ]})
   }
 
   render() {
     return (
       <div>
         <Header/>
-        <Targets targets={ this.state.targets }/>
+        <Tasklist tasks={ this.state.tasks }/>
       </div>
     );
   }
