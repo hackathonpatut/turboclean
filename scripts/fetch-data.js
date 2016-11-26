@@ -16,7 +16,7 @@ const sequelize = new Sequelize('sequelize', '', '', {
   logging: false
 });
 
-const models = require('../src/services/api/models.js');
+const models = require('../server/models.js');
 const targets = models(sequelize).targets;
 const cleanings = models(sequelize).cleanings;
 
@@ -37,7 +37,9 @@ sequelize.sync({force: true}).then(function() {
 		} else {
 			cleanDate = '2016-11-25T06:30:00.000Z'
 		}
-		
+
+    console.log('Imported room ' + row.name)
+
     var target = targets.create({
       xPos: row.x,
       yPos: row.y,
@@ -55,20 +57,20 @@ sequelize.sync({force: true}).then(function() {
 		});
   });
 }).then(function() {
-  
+
   // Get usage data for rooms
   _.map(sourcesJSON, row => {
     getData(row.data_source, startDate);
   })
-  
+
 });
 
 function getData(source, startDate) {
 
   var endDate = moment(startDate, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD')
-  
+
   var URL = 'https://tieto.iottc.tieto.com/measurement/measurements?source=' + source + '&revert=true&dateTo=' + endDate + '&pageSize=100&currentPage=1&dateFrom=' + startDate;
-  
+
   request
     .get(URL)
     .set('Accept', 'application/json')
@@ -76,31 +78,31 @@ function getData(source, startDate) {
     .end(function(err, res){
       if (err || !res.ok) {
         console.log('Couldn\'t get data for source ID ' + source);
-      } else {      
-      
+      } else {
+
         var measurements = res.body.measurements;
-        
+
         // Bail out if there's nothing to read
         if (measurements.size === 0) {
           return false;
         }
-        
+
         measurements = _.orderBy(measurements, 'time', 'asc');
 
         var totalTime = 0;
         var lastTimestamp = null;
         var sensorID = null;
-        
+
         // Required as the list may hold duplicates
         var lastValue = -1;
-        
+
         _.map(measurements, measurement => {
-          
+
           // On first starting element, set sensorID
           if (lastTimestamp == null && measurement.value === 1) {
             sensorID = measurement.source.id;
           }
-          
+
           if (sensorID !== null && lastValue !== measurement.value) {
             // On value 1, start recording
             if (measurement.value === 1) {
@@ -113,9 +115,9 @@ function getData(source, startDate) {
               lastValue = measurement.value;
             }
           }
-          
+
         });
-        
+
         // Update database entry for sensor
         targets.bulkCreate([]).then(function() {
           return targets.update(
@@ -123,8 +125,8 @@ function getData(source, startDate) {
             { where: { sensorID: sensorID }}
           );
         })
-        
+
       }
   });
- 
+
 }
