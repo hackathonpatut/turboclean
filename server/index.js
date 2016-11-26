@@ -9,11 +9,18 @@ var app = express();
 
 var static_path = path.join(__dirname, './../build');
 
-sequelize = new Sequelize('sequelize', '', '', {
- dialect: 'sqlite',
- storage: path.join(__dirname, '../data/db.sqlite'),
- logging: false
-});
+var sequelize;
+
+if ( process.env.DATABASE_URL != undefined ) {
+  sequeelize = new Sequelize( process.env.DATABASE_URL );
+} {
+  sequelize = new Sequelize('sequelize', '', '', {
+   dialect: 'sqlite',
+   storage: path.join(__dirname, '../data/db.sqlite'),
+   logging: false
+  });
+}
+
 
 var models = models(sequelize);
 
