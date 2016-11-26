@@ -56,7 +56,7 @@ app.route('/').get(function(req, res) {
 app.post('/api/button', cors(), function(req, res){
   models.targets.update(
       { dirtyness: 150 },
-      { where: { sensorID: req.body.sensorID }}
+      { where: { sensorId: req.body.sensorId }}
     ).then(function() {
       res.sendStatus(200);
     });
