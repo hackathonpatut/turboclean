@@ -1,7 +1,10 @@
-require("./Assets/style.scss")
+require("./Assets/style.scss");
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var App = require('./App.js');
 
-React.render(<App/>, document.getElementById('body'))
+var AppElem = React.createElement(App);
+
+ReactDOM.render(AppElem, document.getElementById('app'));

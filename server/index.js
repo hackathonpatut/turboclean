@@ -2,18 +2,31 @@ var express= require('express');
 var compression = require('compression');
 var path = require('path');
 var cors = require('cors');
+var Sequelize = require('sequelize');
+var models = require('./models');
 
 var app = express();
 
 var static_path = path.join(__dirname, './../build');
 
+sequelize = new Sequelize('sequelize', '', '', {
+ dialect: 'sqlite',
+ storage: path.join(__dirname, '../data/db.sqlite'),
+ logging: false
+});
+
+var models = models(sequelize);
+
 app.enable('trust proxy');
 
 app.use(compression());
 
-app.options('/api/currentTime', cors());
-app.get('/api/currentTime', cors(), function(req, res) {
-  res.send({ time: new Date() });
+app.options('/api/targets', cors());
+app.get('/api/targets', cors(), function(req, res) {
+  models.targets.findAll()
+  .then(function(data) {
+    res.send(data);
+  })
 });
 
 app.route('/').get(function(req, res) {
@@ -39,6 +52,6 @@ var server = app.listen(process.env.PORT || 5000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log('App listening at http://%s:%s', host, port);
 
 });

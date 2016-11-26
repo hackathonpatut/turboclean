@@ -6,7 +6,7 @@ var webpack = require('webpack');
 var prodLoaders = [
   // javascript/jsx loader - https://www.npmjs.com/package/babel-loader - without the react-hot loader
   {
-    test: /\.jsx?$/,
+    test: /\.js?$/,
     exclude: /node_modules/,
     loaders: ['babel-loader?stage=0&optional=runtime'],
   }

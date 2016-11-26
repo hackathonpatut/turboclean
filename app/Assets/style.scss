@@ -1,28 +1,27 @@
-@import url('//fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Lato');
 
-* {
-	box-sizing: border-box;
-}
+// Variables
+
+$blue: #2196f3;
 
 body {
-	font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  line-height: 1;
 }
 
-.app {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+header {
+  background: $blue;
+  color: #fff;
+  padding: 0.5em 1em;
+
+  h1 {
+    font-size: 1.618em;
+  }
 }
 
-.header {
-	flex-wrap: nowrap;
-	padding-top: 8px;
-	padding-bottom: 8px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	width: 100%;
-  	justify-content: center;
-  	border-bottom: 1px solid #e1e1e1;
-  	background-color: #fAfAfA;
+main {
+  padding: 0.5em 1em;
 }
