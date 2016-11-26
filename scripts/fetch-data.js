@@ -32,7 +32,6 @@ sequelize.sync({force: true}).then(function() {
       name: row.name,
       usageHours: 0,
       trashFullness: 0,
-      lastCleaning: startDate,
       dirtyness: 0
     });
 
