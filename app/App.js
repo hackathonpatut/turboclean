@@ -40,14 +40,14 @@ class Task extends React.Component{
 
   render() {
     const taskClass = (value, other) => {
-      if ( value > 99 ) return "alert " + other;
+      if ( value > 100 ) return "alert " + other;
       if ( value > 80 ) return "red " + other;
       if ( value > 60 ) return "orange " + other;
       return "green " + other;
     };
 
     const priorityLabel = value => {
-      if ( value > 99 ) return "Alert";
+      if ( value > 100 ) return "Alert";
       if ( value > 80 ) return "High";
       if ( value > 60 ) return "Medium";
       return "Low";
@@ -61,7 +61,7 @@ class Task extends React.Component{
         <p className="label"><span>Priority</span> { priorityLabel(this.props.task.dirtyness) }</p>
         <p><span>Trashbin</span> { this.props.task.trashFullness } %</p>
         <div onClick={ this.toggle }>
-          { ( this.props.task.dirtyness < 100 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }
+          { ( this.props.task.dirtyness < 101 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }
         </div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
@@ -93,12 +93,19 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { targets: [] };
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  componentDidMount() {
+  fetchData() {
     request.get('/api/targets').end((err,res) => {
       this.setState({ targets: res.body });
     });
+  }
+
+  componentDidMount() {
+    this.fetchData();
+    setInterval(this.fetchData, parseInt(10*1000));
   }
 
   render() {
