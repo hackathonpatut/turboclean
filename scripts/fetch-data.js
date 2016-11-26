@@ -19,8 +19,8 @@ const sequelize = new Sequelize('sequelize', '', '', {
 const models = require('../src/services/api/models.js');
 const targets = models(sequelize).targets;
 
-// Drop tables and recreate them
-// TODO: Only targets-table is created again
+var startDate='2016-11-22';
+
 sequelize.sync({force: true}).then(function() {
   _.map(sourcesJSON, row => {
     
@@ -37,25 +37,21 @@ sequelize.sync({force: true}).then(function() {
 
     target.save();
   });
+}).then(function() {
+  
+  // Get usage data for rooms
+  _.map(sourcesJSON, row => {
+    getData(row.data_source, startDate);
+  })
+  
 });
 
-//TODO: Parametrize date
-var startDate='2016-11-25';
 
-
-// Uncomment to fetch data
-/*
-_.map(sourcesJSON, row => {
-  getData(row.data_source, startDate);
-})
-*/
-
-// TODO: Save fetched sensor data to tables
 function getData(source, startDate) {
 
   var endDate = moment(startDate, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD')
   
-  var URL='https://tieto.iottc.tieto.com/measurement/measurements?source=' + source + '&revert=true&dateTo=' + endDate + '&pageSize=100&currentPage=1&dateFrom=' + startDate;
+  var URL = 'https://tieto.iottc.tieto.com/measurement/measurements?source=' + source + '&revert=true&dateTo=' + endDate + '&pageSize=100&currentPage=1&dateFrom=' + startDate;
   
   request
     .get(URL)
@@ -64,8 +60,54 @@ function getData(source, startDate) {
     .end(function(err, res){
       if (err || !res.ok) {
         console.log('Couldn\'t get data for source ID ' + source);
-      } else {
-        responseText = JSON.stringify(res.body);
+      } else {      
+      
+        var measurements = res.body.measurements;
+        
+        // Bail out if there's nothing to read
+        if (measurements.size === 0) {
+          return false;
+        }
+        
+        measurements = _.orderBy(measurements, 'time', 'asc');
+
+        var totalTime = 0;
+        var lastTimestamp = null;
+        var sensorID = null;
+        
+        // Required as the list may hold duplicates
+        var lastValue = -1;
+        
+        _.map(measurements, measurement => {
+          
+          // On first starting element, set sensorID
+          if (lastTimestamp == null && measurement.value === 1) {
+            sensorID = measurement.source.id;
+          }
+          
+          if (sensorID !== null && lastValue !== measurement.value) {
+            // On value 1, start recording
+            if (measurement.value === 1) {
+              lastTimestamp = measurement.time;
+              lastValue = measurement.value;
+            // On value 0, stop recording and increment totaltime
+            } else if (measurement.value === 0) {
+              var difference = moment.duration(moment.utc(measurement.time).diff(moment.utc(lastTimestamp)));
+              totalTime += difference.asMinutes() / 60;
+              lastValue = measurement.value;
+            }
+          }
+          
+        });
+        
+        // Update database entry for sensor
+        targets.bulkCreate([]).then(function() {
+          return targets.update(
+            { usageHours: totalTime },
+            { where: { sensorID: sensorID }}
+          );
+        })
+        
       }
   });
  
