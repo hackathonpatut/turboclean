@@ -1,20 +1,12 @@
-## Running
+![Screenshot](https://dl.dropboxusercontent.com/u/4744548/turboclean_screenshot.png)
 
-```
-npm install
-npm start
-```
+*Turboclean* is mobile app prototype for janitors and other building maintenance personnel. It helps to prioritize tasks and to find optimal workflow. Currently service also supports for adhoc service calls, e.g. via IoT buttons.
 
-## Scaffolding
+Prototype was created at [Junction 2016](http://hackjunction.com) hackathon.
 
-Feathers has a powerful generator. Here's just a few things that it can do:
+Authors: @villevuor, @marinp1, @Marcholio, @AlanPirdil, @waldheri
 
-- **Generate a new Service:** `yo feathers:service`
-- **Generate a new Hook:** `yo feathers:hook`
-- **Generate a new Model:** `yo feathers:model`
+### License
 
-## License
-
-Copyright (c) 2015
-
+Copyright (c) 2016
 Licensed under the [MIT license](LICENSE).
