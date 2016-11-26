@@ -4,6 +4,7 @@ var path = require('path');
 var cors = require('cors');
 var Sequelize = require('sequelize');
 var models = require('./models');
+var bodyParser = require('body-parser')
 
 var app = express();
 
@@ -27,6 +28,8 @@ app.enable('trust proxy');
 
 app.use(compression());
 
+app.use(bodyParser.json());
+
 app.options('/api/targets', cors());
 app.get('/api/targets', cors(), function(req, res) {
   models.targets.findAll()
@@ -39,6 +42,15 @@ app.route('/').get(function(req, res) {
     res.header('Cache-Control', "max-age=60, must-revalidate, private");
     res.sendFile('index.html', {
         root: static_path
+    });
+});
+
+app.post('/api/button', cors(), function(req, res){
+  models.targets.update(
+      { dirtyness: 150 },
+      { where: { sensorID: req.body.sensorID }}
+    ).then(function() {
+      res.sendStatus(200);
     });
 });
 
