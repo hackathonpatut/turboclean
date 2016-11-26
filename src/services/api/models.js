@@ -24,12 +24,16 @@ module.exports = function(sequelize) {
       type: Sequelize.FLOAT,
       allowNull: false
     },
-    lastCleaning: {
-      type: Sequelize.DATE,
-      allowNull: false
-    },
     dirtyness: {
       type: Sequelize.FLOAT,
+      allowNull: false
+    },
+    type: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    sensorID: {
+      type: Sequelize.STRING,
       allowNull: false
     }
   }, {
