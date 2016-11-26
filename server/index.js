@@ -12,7 +12,7 @@ var static_path = path.join(__dirname, './../build');
 var sequelize;
 
 if ( process.env.DATABASE_URL != undefined ) {
-  sequeelize = new Sequelize( process.env.DATABASE_URL );
+  sequelize = new Sequelize( process.env.DATABASE_URL );
 } {
   sequelize = new Sequelize('sequelize', '', '', {
    dialect: 'sqlite',
