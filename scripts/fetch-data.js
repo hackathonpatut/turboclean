@@ -14,7 +14,7 @@ var sequelize;
 
 if ( process.env.DATABASE_URL != undefined ) {
   sequelize = new Sequelize( process.env.DATABASE_URL );
-} {
+} else {
   sequelize = new Sequelize('sequelize', '', '', {
    dialect: 'sqlite',
    storage: path.join(__dirname, '../data/db.sqlite'),
