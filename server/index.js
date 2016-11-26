@@ -5,6 +5,7 @@ var cors = require('cors');
 var Sequelize = require('sequelize');
 var models = require('./models');
 
+
 var app = express();
 
 var static_path = path.join(__dirname, './../build');
@@ -29,7 +30,7 @@ app.use(compression());
 
 app.options('/api/targets', cors());
 app.get('/api/targets', cors(), function(req, res) {
-  models.targets.findAll()
+  models.targets.findAll({ limit: 50, order: 'dirtyness DESC' })
   .then(function(data) {
     res.send(data);
   })
