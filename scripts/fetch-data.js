@@ -10,11 +10,17 @@ const Sequelize = require('sequelize');
 
 const dbPath = '../data/db.sqlite';
 
-const sequelize = new Sequelize('sequelize', '', '', {
-  dialect: 'sqlite',
-  storage: path.join(__dirname, dbPath),
-  logging: false
-});
+var sequelize;
+
+if ( process.env.DATABASE_URL != undefined ) {
+  sequelize = new Sequelize( process.env.DATABASE_URL );
+} else {
+  sequelize = new Sequelize('sequelize', '', '', {
+   dialect: 'sqlite',
+   storage: path.join(__dirname, '../data/db.sqlite'),
+   logging: false
+  });
+}
 
 const models = require('../server/models.js');
 const targets = models(sequelize).targets;
@@ -101,9 +107,7 @@ function getData(source, startDate) {
 				}).then(function(target) {
 					cleanings.max('time', {
 						where: {
-							targetID: {
-								$like: '%' + target.get('id') + '%'
-							}
+							targetId: target.get('id')
 						}
 					}).then(function(maxValue) {
 						cleanTimestamp = maxValue;
