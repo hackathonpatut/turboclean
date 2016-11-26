@@ -3,7 +3,7 @@ const render = require('react-dom');
 const _ = require('lodash');
 const request = require('superagent');
 const moment = require('moment');
-const { ArrowBottom } = require('react-bytesize-icons');
+const { ArrowTop } = require('react-bytesize-icons');
 
 const Header = () => (
   <header>
@@ -45,15 +45,21 @@ class Task extends React.Component{
       return "green " + other;
     };
 
+    const priorityLabel = value => {
+      if ( value > 80 ) return "High";
+      if ( value > 60 ) return "Medium";
+      return "Low";
+    };
+
     const collapsedClass = other => ( this.state.completed ? `${other} hide` : (this.state.collapsed ? other : `${other} expanded`) );
 
     return (
       <div className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
         <h2 onClick={ this.toggle }>Room { this.props.task.name }</h2>
-        <p><span>Trash:</span> { this.props.task.trashFullness } %</p>
-        <p><span>Dirtiness:</span> { this.props.task.dirtyness } %</p>
+        <p className="label"><span>Priority</span> { priorityLabel(this.props.task.dirtyness) }</p>
+        <p><span>Trashbin</span> { this.props.task.trashFullness } %</p>
         <div onClick={ this.toggle }>
-          <ArrowBottom color="#ccc"/>
+          <ArrowTop color="#ccc"/>
         </div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
