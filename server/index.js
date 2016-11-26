@@ -5,6 +5,7 @@ var cors = require('cors');
 var Sequelize = require('sequelize');
 var models = require('./models');
 var bodyParser = require('body-parser')
+var updateAll = require('./update')
 
 var app = express();
 
@@ -41,7 +42,12 @@ app.get('/api/targets', cors(), function(req, res) {
 app.post('/api/cleanings', cors(), function(req, res) {
   models.cleanings.create({ targetId: req.body.id, cleaner: req.body.cleaner, time: new Date().toISOString() })
   .then(function(data) {
-    res.sendStatus(200);
+    models.targets.update({ trashFullness: 0 }, { where: { id: req.body.id } }).then(function(data){
+      models.targets.find({ id: req.body.id }).then(function(data){
+        updateAll(data.xPos, data.yPos)
+      })
+      res.sendStatus(200);
+    });
   });
 });
 

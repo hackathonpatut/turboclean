@@ -18,10 +18,8 @@ const models = require('../server/models.js');
 const targets = models(sequelize).targets;
 const cleanings = models(sequelize).cleanings;
 
-updateAll(0,0);
-
-function updateAll(x, y) {
-	targets.findAll()
+module.exports = function updateAll(x, y) {
+  targets.findAll()
 	.then(function(found) {
 		for(t in found) {
 			const id = parseInt(t, 10) + 1;
@@ -37,7 +35,7 @@ function updateAll(x, y) {
 				var dist = Math.sqrt(Math.pow(xPos - x, 2) + Math.pow(yPos - y, 2));
 				var hourDirtyness = hours / 14.0;
 				if(hourDirtyness < 0.6) hourDirtyness = 0.0;
-				
+
 				// TODO maybe implement latest cleaning attribute also?
 				var dirtyness = Math.floor(Math.max(trash, hourDirtyness * 100));
 				if(dist < 20) dirtyness = Math.min(100, dirtyness + 10);
@@ -55,5 +53,4 @@ function updateAll(x, y) {
 			});
 		}
 	});
-	
 }
