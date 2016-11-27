@@ -132,7 +132,19 @@ footer {
     }
   }
 
+  .click-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 5;
+    bottom: 0;
+  }
+
   &.expanded {
+    .click-area {
+      bottom: 80px;
+    }
     .details {
       animation: expand 250ms ease-in-out;
     }
