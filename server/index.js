@@ -42,7 +42,7 @@ app.get('/api/targets', cors(), function(req, res) {
 app.post('/api/cleanings', cors(), function(req, res) {
   models.cleanings.create({ targetId: req.body.id, cleaner: req.body.cleaner, time: new Date().toISOString() })
   .then(function(data) {
-    models.targets.update({ trashFullness: 0 }, { where: { id: req.body.id } }).then(function(data){
+    models.targets.update({ trashFullness: 0, usageHours: 0 }, { where: { id: req.body.id } }).then(function(data){
       models.targets.find({ id: req.body.id }).then(function(data){
         updateAll(data.xPos, data.yPos)
       })
