@@ -54,10 +54,21 @@ class Task extends React.Component{
     };
 
     const collapsedClass = other => ( this.state.completed ? `${other} hide` : (this.state.collapsed ? other : `${other} expanded`) );
-
+		
+		// --------- Some fake data for more interesting demo ----------------
+		let taskName = "";
+		if(this.props.task.name <= "7GP04") taskName = "Room " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		else if(this.props.task.name <= "7GW033") taskName = "Toilet " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		else if(this.props.task.name <= "7GW113") taskName = "Corridor " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		else if(this.props.task.name <= "7GW151") taskName = "Desk " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		else if(this.props.task.name <= "7GW183") taskName = "Lobby " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		else taskName = "Kitchen " + this.props.task.name.charAt(4) + this.props.task.name.charAt(5);
+		// ---------- demo data ----------------------------------------------
+		
+		//----------- replce "taskName" with "this.props.task.name" --------->
     return (
       <div className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
-        <h2 onClick={ this.toggle }>Room { this.props.task.name }</h2>
+        <h2 onClick={ this.toggle }>{ taskName }</h2>
         <p className="label"><span>Priority</span> { priorityLabel(this.props.task.dirtyness) }</p>
         <p><span>Trashbin</span> { this.props.task.trashFullness } %</p>
         <div onClick={ this.toggle }>
