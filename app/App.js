@@ -64,7 +64,7 @@ class Task extends React.Component{
         <div>{ ( this.props.task.dirtyness < 101 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }</div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
-          <p><span>Last cleaned:</span> { moment( _.head (_.maxBy(this.props.task.cleanings, 'time') ) ).calendar() }</p>
+          <p><span>Last cleaned:</span> { moment( _.maxBy(this.props.task.cleanings, 'time').time ).calendar() }</p>
           <p><span>Used after cleaned:</span> { Math.round(this.props.task.usageHours) } hours</p>
           <a onClick={ this.send }>Press to complete</a>
         </div>
