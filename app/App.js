@@ -57,12 +57,11 @@ class Task extends React.Component{
 
     return (
       <div className={ taskClass(this.props.task.dirtyness, collapsedClass('task')) }>
-        <h2 onClick={ this.toggle }>Room { this.props.task.name }</h2>
+        <div className="click-area" onClick={ this.toggle }></div>
+        <h2>Room { this.props.task.name }</h2>
         <p className="label"><span>Priority</span> { priorityLabel(this.props.task.dirtyness) }</p>
         <p><span>Trashbin</span> { this.props.task.trashFullness } %</p>
-        <div onClick={ this.toggle }>
-          { ( this.props.task.dirtyness < 101 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }
-        </div>
+        <div>{ ( this.props.task.dirtyness < 101 ? <ArrowTop color="#ccc"/> : <Bell color="#f44336"/> ) }</div>
         <div className="details">
           <p><span>Location:</span> 7th floor, east</p>
           <p><span>Last cleaned:</span> { moment( _.head (_.maxBy(this.props.task.cleanings, 'time') ) ).calendar() }</p>
